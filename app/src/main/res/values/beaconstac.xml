@@ -14,4 +14,6 @@
     <string name="api_key">b25c04fcceee7f8244a6570a2806b89aa702dfbe</string>
     <integer name="organization_id">1029</integer>
     <string name="uuid">F94DBB23-2266-7822-3782-57BEAC0952AC</string>
+
+    <string name="provider">com.mobstac.anonspot.provider</string>
 </resources>
