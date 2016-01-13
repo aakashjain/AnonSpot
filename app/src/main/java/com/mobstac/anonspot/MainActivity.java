@@ -120,13 +120,12 @@ public class MainActivity extends AppCompatActivity {
                 user.put("name", response);
                 user.put("gender", prefs.getString("gender", ""));
                 ref.child("users").child(uids[0]).setValue(user);
-                return null;
 
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
     }
 }
