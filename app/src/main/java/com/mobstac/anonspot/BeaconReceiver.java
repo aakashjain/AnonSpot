@@ -30,7 +30,7 @@ public class BeaconReceiver extends BeaconstacReceiver {
     }
 
     @Override
-    public void rangedBeacons(Context context, ArrayList<MSBeacon> arrayList) {
+    public void rangedBeacons(Context context, ArrayList<MSBeacon> beacons) {
 
     }
 

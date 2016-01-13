@@ -1,5 +1,8 @@
 package com.mobstac.anonspot;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -35,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private Beaconstac beaconstac;
-    
+
     private Button startButton;
+    private ProgressDialog loader;
     private Firebase ref;
     private SharedPreferences prefs;
     private BeaconReceiver beaconReceiver;
@@ -54,33 +59,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         beaconstac = Beaconstac.getInstance(getApplicationContext());
-        beaconstac.setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        Firebase.setAndroidContext(getApplicationContext());
-        ref = new Firebase(AnonSpotConstants.FIREBASE_URL);
-        ref.authAnonymously(new Firebase.AuthResultHandler() {
-
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                Log.i(TAG, "Authenticated");
-                new RandomNameGetter().execute(authData.getUid());
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                Log.i(TAG, "Error authenticating: " + firebaseError.toString());
-            }
-        });
-
-        //do stuff
-
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
             Log.e(TAG,"Couldn't start ranging");
         }
+
         // add a click listener to start button
         startButton = (Button) findViewById(R.id.start_button);
         startButton.setOnClickListener(new MyOnClickListener());
@@ -120,12 +104,45 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (AnonSpot.prefs.getString("gender", "-").equals("-")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final CharSequence[] items = new CharSequence[] {"Male", "Female", "Other"};
+            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = AnonSpot.prefs.edit();
+                    editor.putString("gender", items[which].toString());
+                    editor.commit();
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+        }
+    }
+
     protected class MyOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
-            startActivity(intent);
+            loader = ProgressDialog.show(MainActivity.this, "Just a sec",
+                                        "Adding you to the room", true, true);
+
+            AnonSpot.firebase.authAnonymously(new Firebase.AuthResultHandler() {
+
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    Log.i(TAG, "Authenticated");
+                    new RandomNameGetter().execute(authData.getUid());
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                }
+            });
         }
     }
 
@@ -163,8 +180,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Map<String, String> user = new HashMap<String, String>();
                 user.put("name", response);
-                user.put("gender", prefs.getString("gender", ""));
-                ref.child("users").child(uids[0]).setValue(user);
+                user.put("gender", AnonSpot.prefs.getString("gender", "-"));
+                AnonSpot.firebase.child("users").child(uids[0]).setValue(user);
+
+                SharedPreferences.Editor editor = AnonSpot.prefs.edit();
+                editor.putString("name", response);
+                editor.commit();
 
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -172,7 +193,12 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            loader.dismiss();
+            Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
+            startActivity(intent);
+        }
     }
-
-
 }

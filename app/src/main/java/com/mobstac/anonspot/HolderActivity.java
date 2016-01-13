@@ -1,5 +1,6 @@
 package com.mobstac.anonspot;
 
+import android.content.Context;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,6 +68,11 @@ public class HolderActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,21 +108,14 @@ public class HolderActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-
-//            return PlaceholderFragment.newInstance(position);
-            // for position 0 -- global chat
             if (position == 0)
                 return new OnlineUsers();
-            // for position 1 -- online users
             else
                 return new GlobalChat();
         }
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
             return 2;
         }
 
