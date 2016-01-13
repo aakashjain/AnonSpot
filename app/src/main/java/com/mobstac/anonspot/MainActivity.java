@@ -92,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
     private void registerBroadcast() {
         if (!registered) {
             IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
             registerReceiver(beaconReceiver, intentFilter);
             registered = true;
         }
