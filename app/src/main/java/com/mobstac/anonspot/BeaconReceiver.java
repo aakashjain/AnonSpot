@@ -15,42 +15,42 @@ import java.util.ArrayList;
 public class BeaconReceiver extends BeaconstacReceiver {
 
     @Override
-    public void rangedBeacons(Context context, ArrayList<MSBeacon> arrayList) {
+    public void rangedBeacons(Context context, ArrayList<MSBeacon> beacons) {
 
     }
 
     @Override
-    public void campedOnBeacon(Context context, MSBeacon msBeacon) {
+    public void campedOnBeacon(Context context, MSBeacon beacon) {
 
     }
 
     @Override
-    public void exitedBeacon(Context context, MSBeacon msBeacon) {
+    public void exitedBeacon(Context context, MSBeacon beacon) {
 
     }
 
     @Override
-    public void triggeredRule(Context context, String s, ArrayList<MSAction> arrayList) {
+    public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
 
     }
 
     @Override
-    public void enteredRegion(Context context, String s) {
+    public void enteredRegion(Context context, String region) {
 
     }
 
     @Override
-    public void exitedRegion(Context context, String s) {
+    public void exitedRegion(Context context, String region) {
 
     }
 
     @Override
-    public void enteredGeofence(Context context, ArrayList<MSPlace> arrayList) {
+    public void enteredGeofence(Context context, ArrayList<MSPlace> places) {
 
     }
 
     @Override
-    public void exitedGeofence(Context context, ArrayList<MSPlace> arrayList) {
+    public void exitedGeofence(Context context, ArrayList<MSPlace> places) {
 
     }
 }
