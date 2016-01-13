@@ -1,6 +1,9 @@
 package com.mobstac.anonspot;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +16,21 @@ import com.firebase.client.FirebaseError;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.utils.MSException;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private Beaconstac beaconstac;
-    private Firebase room;
+    private Firebase ref;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +45,16 @@ public class MainActivity extends AppCompatActivity {
         beaconstac = Beaconstac.getInstance(getApplicationContext());
         beaconstac.setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         Firebase.setAndroidContext(getApplicationContext());
-        room = new Firebase("https://anonspot.firebaseio.com/room");
-        room.authAnonymously(new Firebase.AuthResultHandler() {
+        ref = new Firebase(AnonSpotConstants.FIREBASE_URL);
+        ref.authAnonymously(new Firebase.AuthResultHandler() {
 
             @Override
             public void onAuthenticated(AuthData authData) {
                 Log.i(TAG, "Authenticated");
+                new RandomNameGetter().execute(authData.getUid());
             }
 
             @Override
@@ -65,5 +80,36 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"Couldn't stop ranging");
         }
         super.onDestroy();
+    }
+
+    private class RandomNameGetter extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... uids) {
+            try {
+                URL url = new URL(AnonSpotConstants.NAME_GEN_URL);
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpsURLConnection.HTTP_OK) {
+                    Log.i(TAG, "Request not OK: " + String.valueOf(responseCode));
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String response = reader.readLine();
+                connection.disconnect();
+                Log.i(TAG, "GET request successful");
+
+                Map<String, String> user = new HashMap<String, String>();
+                user.put("name", response);
+                user.put("gender", prefs.getString("gender", ""));
+                ref.child("users").child(uids[0]).setValue(user);
+                return null;
+
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }

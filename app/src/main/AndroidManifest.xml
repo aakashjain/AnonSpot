@@ -31,14 +31,14 @@
             android:name="com.mobstac.beaconstac.core.MSBLEService"
             android:enabled="true" />
 
-        <!-- <provider -->
-        <!-- android:authorities="@string/provider" -->
-        <!-- android:name="com.mobstac.beaconstac.provider.MSContentProvider" -->
-        <!-- android:enabled="true" -->
-        <!-- android:exported="false" -->
-        <!-- android:multiprocess="true" -->
-        <!-- android:grantUriPermissions="true" -->
-        <!-- android:syncable="true" /> -->
+        <provider
+            android:authorities="com.mobstac.anonspot.provider"
+            android:name="com.mobstac.anonspot.AnonSpotProvider"
+            android:enabled="true"
+            android:exported="false"
+            android:multiprocess="true"
+            android:grantUriPermissions="true"
+            android:syncable="true" />
 
         <activity
             android:name=".GlobalChat"
