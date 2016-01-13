@@ -18,7 +18,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".AnonSpot">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +42,7 @@
             android:syncable="true" />
 
         <activity
-            android:name=".GlobalChat"
+            android:name=".HolderActivity"
             android:label="@string/title_activity_global_chat"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

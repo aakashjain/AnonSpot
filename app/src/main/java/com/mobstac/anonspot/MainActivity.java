@@ -1,5 +1,6 @@
 package com.mobstac.anonspot;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private Beaconstac beaconstac;
+    
+    private Button startButton;
     private Firebase ref;
     private SharedPreferences prefs;
     private BeaconReceiver beaconReceiver;
@@ -76,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         } catch  (MSException e) {
             Log.e(TAG,"Couldn't start ranging");
         }
+        // add a click listener to start button
+        startButton = (Button) findViewById(R.id.start_button);
+        startButton.setOnClickListener(new MyOnClickListener());
 
         beaconReceiver = new BeaconReceiver(this);
         registerBroadcast();
@@ -110,6 +118,15 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"Couldn't stop ranging");
         }
         super.onDestroy();
+    }
+
+    protected class MyOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -148,13 +165,12 @@ public class MainActivity extends AppCompatActivity {
                 user.put("name", response);
                 user.put("gender", prefs.getString("gender", ""));
                 ref.child("users").child(uids[0]).setValue(user);
-                return null;
 
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
     }
 
