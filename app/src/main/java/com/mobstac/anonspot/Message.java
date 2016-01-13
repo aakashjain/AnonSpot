@@ -11,12 +11,12 @@ public class Message {
         //nothing
     }
     public Message(User user, String message) {
-        this.user = user
+        this.user = user;
         this.message = message;
     }
 
     public String getUser() {
-        return user;
+        return this.user.toString();
     }
     public String getMessage() {
         return message;

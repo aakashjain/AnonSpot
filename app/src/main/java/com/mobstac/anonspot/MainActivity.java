@@ -1,9 +1,12 @@
 package com.mobstac.anonspot;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Beaconstac beaconstac;
     private Firebase room;
+    private Button startButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        beaconstac = Beaconstac.getInstance(getApplicationContext());
-        beaconstac.setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
+//        beaconstac = Beaconstac.getInstance(getApplicationContext());
+//        beaconstac.setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
 
         Firebase.setAndroidContext(getApplicationContext());
         room = new Firebase("https://anonspot.firebaseio.com/room");
@@ -50,20 +54,33 @@ public class MainActivity extends AppCompatActivity {
 
         //do stuff
 
-        try {
-            beaconstac.startRangingBeacons();
-        } catch  (MSException e) {
-            Log.e(TAG,"Couldn't start ranging");
-        }
+//        try {
+//            beaconstac.startRangingBeacons();
+//        } catch  (MSException e) {
+//            Log.e(TAG,"Couldn't start ranging");
+//        }
+
+        // add a click listener to start button
+        startButton = (Button) findViewById(R.id.start_button);
+        startButton.setOnClickListener(new MyOnclickListener());
     }
 
     @Override
     protected void onDestroy() {
-        try {
-            beaconstac.stopRangingBeacons();
-        } catch  (MSException e) {
-            Log.e(TAG,"Couldn't stop ranging");
-        }
+//        try {
+//            beaconstac.stopRangingBeacons();
+//        } catch  (MSException e) {
+//            Log.e(TAG,"Couldn't stop ranging");
+//        }
         super.onDestroy();
+    }
+
+    protected class MyOnclickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
+            startActivity(intent);
+        }
     }
 }

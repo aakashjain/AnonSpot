@@ -18,7 +18,7 @@ public class User {
     public String getName() {
         return this.name;
     }
-    public Strin getGender() {
+    public String getGender() {
         return this.gender;
     }
 }
