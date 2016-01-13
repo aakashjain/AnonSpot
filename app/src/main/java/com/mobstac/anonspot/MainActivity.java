@@ -11,6 +11,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import com.mobstac.beaconstac.core.Beaconstac;
+import com.mobstac.beaconstac.utils.MSException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,5 +47,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Error authenticating: " + firebaseError.toString());
             }
         });
+
+        //do stuff
+
+        try {
+            beaconstac.startRangingBeacons();
+        } catch  (MSException e) {
+            Log.e("Couldn't start ranging");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            beaconstac.stopRangingBeacons();
+        } catch  (MSException e) {
+            Log.e("Couldn't stop ranging");
+        }
+        super.onDestroy();
     }
 }
