@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AnonSpot</string>
+
+    <string name="ble_not_supported">Your device does not support Bluetooth Low Energy.</string>
+</resources>

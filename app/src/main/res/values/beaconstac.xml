@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="ruleProcessingEnabled">true</bool>
+    <integer name="ruleSyncInterval">86400</integer>
+    <string-array name="ruleEvents">
+        <item>CAMPED</item>
+        <item>EXITED</item>
+    </string-array>
+
+    <bool name="analyticsEnabled">true</bool>
+    <integer name="analyticsPostInterval">900</integer>
+    <bool name="bugTrackingEnabled">true</bool>
+
+    <string name="api_key">b25c04fcceee7f8244a6570a2806b89aa702dfbe</string>
+    <integer name="organization_id">1029</integer>
+    <string name="uuid">F94DBB23-2266-7822-3782-57BEAC0952AC</string>
+</resources>
