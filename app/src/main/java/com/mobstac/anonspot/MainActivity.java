@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
-            Log.e("Couldn't start ranging");
+            Log.e(TAG,"Couldn't start ranging");
         }
     }
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             beaconstac.stopRangingBeacons();
         } catch  (MSException e) {
-            Log.e("Couldn't stop ranging");
+            Log.e(TAG,"Couldn't stop ranging");
         }
         super.onDestroy();
     }
