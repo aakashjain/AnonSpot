@@ -1,6 +1,8 @@
 package com.mobstac.anonspot;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.TextView;
 
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.core.MSPlace;
@@ -14,6 +16,12 @@ import java.util.ArrayList;
  */
 public class BeaconReceiver extends BeaconstacReceiver {
 
+    private Activity activity;
+
+    public BeaconReceiver (Activity activity) {
+        this.activity = activity;
+    }
+
     @Override
     public void rangedBeacons(Context context, ArrayList<MSBeacon> arrayList) {
 
@@ -21,7 +29,12 @@ public class BeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void campedOnBeacon(Context context, MSBeacon msBeacon) {
+        if (msBeacon.getMajor() == 50 && msBeacon.getMinor() ==70 ) {
 
+        } else {
+            TextView textView = (TextView) activity.findViewById(R.id.text_view1);
+            textView.setText("Camped on: " + msBeacon.getMajor() +" " + msBeacon.getMinor());
+        }
     }
 
     @Override

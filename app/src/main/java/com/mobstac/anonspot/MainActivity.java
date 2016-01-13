@@ -1,5 +1,6 @@
 package com.mobstac.anonspot;
 
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -7,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -14,6 +16,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import com.mobstac.beaconstac.core.Beaconstac;
+import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.utils.MSException;
 
 import java.io.BufferedReader;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private Beaconstac beaconstac;
     private Firebase ref;
     private SharedPreferences prefs;
+    private BeaconReceiver beaconReceiver;
+    private boolean registered = false;
+    private boolean appInForeground = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,30 @@ public class MainActivity extends AppCompatActivity {
         } catch  (MSException e) {
             Log.e(TAG,"Couldn't start ranging");
         }
+
+        beaconReceiver = new BeaconReceiver(this);
+        registerBroadcast();
+    }
+
+    private void registerBroadcast() {
+        if (!registered) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
+            registerReceiver(beaconReceiver, intentFilter);
+            registered = true;
+        }
+    }
+
+    private void unregisterBroadcast() {
+        if (registered) {
+            unregisterReceiver(beaconReceiver);
+            registered = false;
+        }
     }
 
     @Override
@@ -80,6 +110,21 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG,"Couldn't stop ranging");
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterBroadcast();
+
+        appInForeground = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerBroadcast();
+        appInForeground = true;
     }
 
     private class RandomNameGetter extends AsyncTask<String, Void, Void> {
@@ -112,4 +157,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
