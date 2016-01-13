@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // add a click listener to start button
         startButton = (Button) findViewById(R.id.start_button);
-        startButton.setOnClickListener(new MyOnclickListener());
+        startButton.setOnClickListener(new MyOnClickListener());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    protected class MyOnclickListener implements View.OnClickListener {
+    protected class MyOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
