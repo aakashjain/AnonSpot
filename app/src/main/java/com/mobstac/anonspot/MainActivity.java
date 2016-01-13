@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // add a click listener to start button
         startButton = (Button) findViewById(R.id.start_button);
-        startButton.setOnClickListener(new MyOnclickListener());
+        startButton.setOnClickListener(new MyOnClickListener());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    protected class MyOnclickListener implements View.OnClickListener {
+    protected class MyOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -120,13 +120,12 @@ public class MainActivity extends AppCompatActivity {
                 user.put("name", response);
                 user.put("gender", prefs.getString("gender", ""));
                 ref.child("users").child(uids[0]).setValue(user);
-                return null;
 
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
     }
 }
