@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 
 import android.content.DialogInterface;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,29 +22,14 @@ import java.util.ArrayList;
 public class BeaconReceiver extends BeaconstacReceiver {
 
     private final Activity activity;
-    private AlertDialog dialog;
+
     private Button startButton;
 
     private static boolean atAnonSpot = false;
 
     public BeaconReceiver(Activity activity) {
         this.activity = activity;
-
         startButton = (Button) activity.findViewById(R.id.start_button);
-
-//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//        builder.setMessage(R.string.dialog_message)
-//                .setTitle(R.string.dialog_title);
-//
-//        builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                activity.finish();
-//            }
-//        });
-//
-//        dialog = builder.create();
-//        dialog.setCanceledOnTouchOutside(false);
-        //TODO: put this in the chat receiver ^
     }
 
     @Override
@@ -53,20 +39,19 @@ public class BeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void campedOnBeacon(Context context, MSBeacon beacon) {
-        TextView label = (TextView) activity.findViewById(R.id.text_view1);
-        label.setText(beacon.getBeaconKey());
+//        TextView label = (TextView) activity.findViewById(R.id.text_view1);
+//        label.setText(beacon.getBeaconKey());
+        Log.wtf("br_1 camped on", beacon.getBeaconKey());
     }
 
     @Override
     public void exitedBeacon(Context context, MSBeacon beacon) {
-        if (atAnonSpot) {
-//            dialog.show(); TODO: put this in the other receiver
-            startButton.setEnabled(false);
-        }
+
     }
 
     @Override
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
+        Log.wtf("triggered", rule);
         if (rule.equals("EnterAnonSpot")) {
             startButton.setEnabled(true);
             atAnonSpot = true;

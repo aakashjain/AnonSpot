@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
         beaconReceiver = new BeaconReceiver(this);
         registerBroadcast();
-
+        startButton.setEnabled(true);
         beaconstac = Beaconstac.getInstance(getApplicationContext());
+        beaconstac.syncRules();
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
