@@ -24,7 +24,7 @@ public class OnlineUsers extends ListFragment {
         super.onStart();
         final ListView list = getListView();
         UserListAdapter adapter = new UserListAdapter(getActivity(), R.layout.user_view,
-                                    AnonSpot.firebase.child("users"));
+                                    AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users"));
         list.setAdapter(adapter);
     }
 

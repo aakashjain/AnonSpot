@@ -8,14 +8,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             loader = ProgressDialog.show(MainActivity.this, "Just a sec",
                                         "Adding you to the room", true, true);
 
-            AnonSpot.firebase.authAnonymously(new Firebase.AuthResultHandler() {
+            AnonSpot.firebase.child(AnonSpot.spotBeaconKey).authAnonymously(new Firebase.AuthResultHandler() {
 
                 @Override
                 public void onAuthenticated(AuthData authData) {
@@ -176,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, String> user = new HashMap<String, String>();
                 user.put("name", response);
                 user.put("gender", AnonSpot.prefs.getString("gender", "-"));
-                AnonSpot.firebase.child("users").child(uids[0]).setValue(user);
+                AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uids[0]).setValue(user);
 
                 SharedPreferences.Editor editor = AnonSpot.prefs.edit();
                 editor.putString("name", response);
