@@ -1,6 +1,7 @@
 package com.mobstac.anonspot;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mobstac.beaconstac.core.MSConstants;
+
 public class HolderActivity extends AppCompatActivity {
 
     /**
@@ -24,6 +27,9 @@ public class HolderActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private BeaconReceiver2 beaconReceiver;
+    private boolean appInForeground = false;
+    private boolean registered = false;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -57,13 +63,49 @@ public class HolderActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+        beaconReceiver = new BeaconReceiver2(this);
+        registerBroadcast();
+    }
 
+    private void registerBroadcast() {
+        if (!registered) {
+            IntentFilter intentFilter = new IntentFilter();
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
+//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
+            registerReceiver(beaconReceiver, intentFilter);
+            registered = true;
+        }
+    }
+
+    private void unregisterBroadcast() {
+        if (registered) {
+            unregisterReceiver(beaconReceiver);
+            registered = false;
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterBroadcast();
+        appInForeground = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerBroadcast();
+        appInForeground = true;
     }
 
     @Override
