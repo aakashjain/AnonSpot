@@ -10,9 +10,7 @@ import android.widget.ListView;
 
 public class OnlineUsers extends ListFragment {
 
-    public OnlineUsers() {
-        // Required empty public constructor
-    }
+    public OnlineUsers() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
