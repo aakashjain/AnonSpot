@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;
 
 public class HolderActivity extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class HolderActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private BeaconReceiver2 beaconReceiver;
+    private ChattingBeaconReceiver beaconReceiver;
     private boolean appInForeground = false;
     private boolean registered = false;
 
@@ -63,19 +64,22 @@ public class HolderActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-        beaconReceiver = new BeaconReceiver2(this);
+        beaconReceiver = new ChattingBeaconReceiver(this);
         registerBroadcast();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Beaconstac beaconstac = Beaconstac.getInstance(getApplicationContext());
+        beaconstac.setUserFacts("InAnonSpot", "false");
+        super.onDestroy();
     }
 
     private void registerBroadcast() {
         if (!registered) {
             IntentFilter intentFilter = new IntentFilter();
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
             registerReceiver(beaconReceiver, intentFilter);
             registered = true;
         }

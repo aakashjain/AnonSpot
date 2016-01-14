@@ -14,6 +14,7 @@ public class AnonSpot extends Application {
 
     public static Firebase firebase;
     public static SharedPreferences prefs;
+    public static String spotBeaconKey;
 
     @Override
     public void onCreate() {
@@ -23,5 +24,6 @@ public class AnonSpot extends Application {
         Firebase.setAndroidContext(getApplicationContext());
         firebase = new Firebase(AnonSpotConstants.FIREBASE_URL);
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        spotBeaconKey = "-";
     }
 }

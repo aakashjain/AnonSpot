@@ -19,15 +19,12 @@ import java.util.ArrayList;
 /**
  * Created by aakash on 13/1/16.
  */
-public class BeaconReceiver extends BeaconstacReceiver {
+public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
     private final Activity activity;
-
     private Button startButton;
 
-    private static boolean atAnonSpot = false;
-
-    public BeaconReceiver(Activity activity) {
+    public SearchingBeaconReceiver(Activity activity) {
         this.activity = activity;
         startButton = (Button) activity.findViewById(R.id.start_button);
     }
@@ -39,22 +36,18 @@ public class BeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void campedOnBeacon(Context context, MSBeacon beacon) {
-//        TextView label = (TextView) activity.findViewById(R.id.text_view1);
-//        label.setText(beacon.getBeaconKey());
-        Log.wtf("br_1 camped on", beacon.getBeaconKey());
+        AnonSpot.spotBeaconKey = beacon.getBeaconKey();
     }
 
     @Override
     public void exitedBeacon(Context context, MSBeacon beacon) {
-
+        startButton.setEnabled(false);
     }
 
     @Override
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
-        Log.wtf("triggered", rule);
         if (rule.equals("EnterAnonSpot")) {
             startButton.setEnabled(true);
-            atAnonSpot = true;
         }
     }
 

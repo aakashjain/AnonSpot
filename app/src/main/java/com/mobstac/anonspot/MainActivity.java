@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button startButton;
     private ProgressDialog loader;
-    private BeaconReceiver beaconReceiver;
+    private SearchingBeaconReceiver beaconReceiver;
     private boolean registered = false;
     private boolean appInForeground = false;
 
@@ -57,11 +57,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startButton = (Button) findViewById(R.id.start_button);
+        startButton.setEnabled(false);
         startButton.setOnClickListener(new MyOnClickListener());
 
-        beaconReceiver = new BeaconReceiver(this);
+        beaconReceiver = new SearchingBeaconReceiver(this);
         registerBroadcast();
-        startButton.setEnabled(true);
         beaconstac = Beaconstac.getInstance(getApplicationContext());
         beaconstac.syncRules();
         try {
@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        startButton.setEnabled(false);
         unregisterBroadcast();
         appInForeground = false;
     }
@@ -190,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            beaconstac.setUserFacts("InAnonSpot", "true");
             loader.dismiss();
             Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
             startActivity(intent);

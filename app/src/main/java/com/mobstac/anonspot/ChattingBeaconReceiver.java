@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Button;
 
+import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.core.MSPlace;
 import com.mobstac.beaconstac.models.MSAction;
@@ -17,18 +18,17 @@ import java.util.ArrayList;
 /**
  * Created by mobstac on 14/1/16.
  */
-public class BeaconReceiver2 extends BeaconstacReceiver{
+public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     private AlertDialog dialog;
     private final Activity activity;
-    private static boolean atAnonSpot = false;
+    private boolean inSameSpot = true;
 
-    public BeaconReceiver2(final Activity activity) {
+    public ChattingBeaconReceiver(final Activity activity) {
         this.activity = activity;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(R.string.dialog_message)
-                .setTitle(R.string.dialog_title);
+        builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
 
         builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -41,34 +41,27 @@ public class BeaconReceiver2 extends BeaconstacReceiver{
     }
 
     @Override
-    public void rangedBeacons(Context context, ArrayList<MSBeacon> arrayList) {
+    public void rangedBeacons(Context context, ArrayList<MSBeacon> beacons) {
 
     }
 
     @Override
-    public void campedOnBeacon(Context context, MSBeacon msBeacon) {
-        Log.wtf("br_2 camped on", msBeacon.getBeaconKey() + msBeacon.getMinor());
-//        if(msBeaoon.getMajor()==50 && msBeacon.getMinor()==40)
-//        {
-//            atAnonSpot=true;
-//        }
-//        else
-//        {
-//            atAnonSpot=false;
-//        }
-        if (dialog.isShowing()) dialog.dismiss();
-    }
-
-    @Override
-    public void exitedBeacon(Context context, MSBeacon msBeacon) {
-        if (msBeacon.getMinor() == 40) {
-            dialog.show();
+    public void campedOnBeacon(Context context, MSBeacon beacon) {
+        if (beacon.getBeaconKey().equals(AnonSpot.spotBeaconKey)) {
+            dialog.dismiss();
         }
     }
 
     @Override
-    public void triggeredRule(Context context, String s, ArrayList<MSAction> arrayList) {
+    public void exitedBeacon(Context context, MSBeacon beacon) {
 
+    }
+
+    @Override
+    public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
+        if (rule.equals("ExitAnonSpot")) {
+            dialog.show();
+        }
     }
 
     @Override
