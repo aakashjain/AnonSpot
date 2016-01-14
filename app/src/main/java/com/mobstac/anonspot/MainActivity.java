@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +18,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
+import com.firebase.client.ValueEventListener;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.utils.MSException;
@@ -60,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         beaconReceiver = new SearchingBeaconReceiver(this);
         registerBroadcast();
         beaconstac = Beaconstac.getInstance(getApplicationContext());
-        beaconstac.syncRules();
+
+//        beaconstac.setUserFacts();
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
             registerReceiver(beaconReceiver, intentFilter);
             registered = true;
         }
@@ -122,17 +130,42 @@ public class MainActivity extends AppCompatActivity {
             loader = ProgressDialog.show(MainActivity.this, "Just a sec",
                                         "Adding you to the room", true, true);
 
-            AnonSpot.firebase.child(AnonSpot.spotBeaconKey).authAnonymously(new Firebase.AuthResultHandler() {
-
+            final String gender = AnonSpot.prefs.getString("gender", "Other");
+            Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
+            genderStore.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onAuthenticated(AuthData authData) {
-                    Log.i(TAG, "Authenticated");
-                    new RandomNameGetter().execute(authData.getUid());
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Genders current = dataSnapshot.getValue(Genders.class);
+                    if (current == null || current.getRatio(gender) <= 0.5) {
+                        AnonSpot.firebase.child(AnonSpot.spotBeaconKey)
+                                            .authAnonymously(new Firebase.AuthResultHandler() {
+
+                            @Override
+                            public void onAuthenticated(AuthData authData) {
+                                Log.i(TAG, "Authenticated");
+                                new RandomNameGetter().execute(authData.getUid());
+                            }
+
+                            @Override
+                            public void onAuthenticationError(FirebaseError firebaseError) {
+                                Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                            }
+                        });
+                    } else {
+
+                        loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
+                        final Handler h = new Handler() {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                loader.dismiss();
+                            }
+                        };
+                        h.sendMessageDelayed(h.obtainMessage(), 5000);
+                    }
                 }
 
                 @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                public void onCancelled(FirebaseError firebaseError) {
                 }
             });
         }
@@ -170,10 +203,30 @@ public class MainActivity extends AppCompatActivity {
                 connection.disconnect();
                 Log.i(TAG, "GET request successful");
 
+                final String gender = AnonSpot.prefs.getString("gender", "Other");
                 Map<String, String> user = new HashMap<String, String>();
                 user.put("name", response);
-                user.put("gender", AnonSpot.prefs.getString("gender", "-"));
+                user.put("gender", gender);
                 AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uids[0]).setValue(user);
+
+
+                AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders")
+                                            .runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Genders g = mutableData.getValue(Genders.class);
+                        if (g == null) {
+                            g = new Genders(0, 0, 0);
+                        }
+                        g.increment(gender);
+                        mutableData.setValue(g);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                    }
+                });
 
                 SharedPreferences.Editor editor = AnonSpot.prefs.edit();
                 editor.putString("name", response);

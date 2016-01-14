@@ -70,8 +70,12 @@ public class HolderActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        String uid = AnonSpot.firebase.getAuth().getUid();
+        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
+
         Beaconstac beaconstac = Beaconstac.getInstance(getApplicationContext());
         beaconstac.setUserFacts("InAnonSpot", "false");
+
         super.onDestroy();
     }
 

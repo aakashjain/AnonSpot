@@ -53,12 +53,11 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void enteredRegion(Context context, String region) {
-
+        Log.i("Entered region", region);
     }
 
     @Override
     public void exitedRegion(Context context, String region) {
-
 
     }
 
