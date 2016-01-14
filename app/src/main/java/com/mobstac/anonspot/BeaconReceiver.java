@@ -20,13 +20,30 @@ import java.util.ArrayList;
  */
 public class BeaconReceiver extends BeaconstacReceiver {
 
-    private Activity activity;
+    private final Activity activity;
+    private AlertDialog dialog;
+    private Button startButton;
 
-//    private boolean onTheSpot = false;
+    private static boolean atAnonSpot = false;
 
-    public BeaconReceiver (Activity activity) {
+    public BeaconReceiver(Activity activity) {
         this.activity = activity;
 
+        startButton = (Button) activity.findViewById(R.id.start_button);
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//        builder.setMessage(R.string.dialog_message)
+//                .setTitle(R.string.dialog_title);
+//
+//        builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                activity.finish();
+//            }
+//        });
+//
+//        dialog = builder.create();
+//        dialog.setCanceledOnTouchOutside(false);
+        //TODO: put this in the chat receiver ^
     }
 
     @Override
@@ -35,61 +52,45 @@ public class BeaconReceiver extends BeaconstacReceiver {
     }
 
     @Override
-    public void campedOnBeacon(Context context, MSBeacon msBeacon) {
-        Button startButton = (Button) activity.findViewById(R.id.start_button);
-        if (msBeacon.getMajor() == 50 && msBeacon.getMinor() == 40 ) {
-            startButton.setEnabled(true);
-        } else {
+    public void campedOnBeacon(Context context, MSBeacon beacon) {
+        TextView label = (TextView) activity.findViewById(R.id.text_view1);
+        label.setText(beacon.getBeaconKey());
+    }
+
+    @Override
+    public void exitedBeacon(Context context, MSBeacon beacon) {
+        if (atAnonSpot) {
+//            dialog.show(); TODO: put this in the other receiver
             startButton.setEnabled(false);
         }
     }
 
     @Override
-    public void exitedBeacon(Context context, MSBeacon msBeacon) {
-        if (msBeacon.getMinor() !=40 ) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(R.string.dialog_message)
-                    .setTitle(R.string.dialog_title);
-
-            builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button
-                    activity.finish();
-                }
-            });
-
-
-            AlertDialog dialog = builder.create();
-            dialog.setCanceledOnTouchOutside(false);
-
-            dialog.show();
+    public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
+        if (rule.equals("EnterAnonSpot")) {
+            startButton.setEnabled(true);
+            atAnonSpot = true;
         }
     }
 
     @Override
-    public void triggeredRule(Context context, String s, ArrayList<MSAction> arrayList) {
+    public void enteredRegion(Context context, String region) {
 
     }
 
     @Override
-    public void enteredRegion(Context context, String s) {
-
-    }
-
-    @Override
-    public void exitedRegion(Context context, String s) {
+    public void exitedRegion(Context context, String region) {
 
 
     }
 
     @Override
-    public void enteredGeofence(Context context, ArrayList<MSPlace> arrayList) {
+    public void enteredGeofence(Context context, ArrayList<MSPlace> places) {
 
     }
 
     @Override
-    public void exitedGeofence(Context context, ArrayList<MSPlace> arrayList) {
+    public void exitedGeofence(Context context, ArrayList<MSPlace> places) {
 
     }
 }

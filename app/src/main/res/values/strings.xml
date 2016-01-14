@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="dialog_message">you\'re out of the AnonSpot. Come back to continue!!!</string>
-    <string name="dialog_title">warning</string>
-    <string name="dialog_leave">I want to leave!</string>
+    <string name="dialog_message">Leaving AnonSpot! Come back!!!</string>
+    <string name="dialog_title">Warning</string>
+    <string name="dialog_leave">Nah I\'m done</string>
 </resources>

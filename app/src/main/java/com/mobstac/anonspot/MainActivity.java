@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Button startButton;
     private ProgressDialog loader;
-    private Firebase ref;
-    private SharedPreferences prefs;
     private BeaconReceiver beaconReceiver;
     private boolean registered = false;
     private boolean appInForeground = false;
@@ -58,30 +56,26 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        beaconstac = Beaconstac.getInstance(getApplicationContext());
-        try {
-            beaconstac.startRangingBeacons();
-        } catch  (MSException e) {
-            Log.e(TAG,"Couldn't start ranging");
-        }
-
-        // add a click listener to start button
         startButton = (Button) findViewById(R.id.start_button);
         startButton.setOnClickListener(new MyOnClickListener());
 
         beaconReceiver = new BeaconReceiver(this);
         registerBroadcast();
+
+        beaconstac = Beaconstac.getInstance(getApplicationContext());
+        try {
+            beaconstac.startRangingBeacons();
+        } catch  (MSException e) {
+            Log.e(TAG, "Couldn't start ranging");
+        }
     }
 
     private void registerBroadcast() {
         if (!registered) {
             IntentFilter intentFilter = new IntentFilter();
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RANGED_BEACON);
             intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
-//            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_REGION);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
             registerReceiver(beaconReceiver, intentFilter);
             registered = true;
         }
@@ -150,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterBroadcast();
-
         appInForeground = false;
     }
 
