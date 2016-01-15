@@ -2,7 +2,8 @@
     <string name="app_name">AnonSpot</string>
 
     <string name="ble_not_supported">Your device does not support Bluetooth Low Energy.</string>
-    <string name="title_activity_global_chat">GlobalChat</string>
+    <string name="title_activity_global_chat">AnonSpot</string>
+    <string name="title_activity_private_chat">AnonSpot: Private</string>
     <string name="action_settings">Set gender</string>
     <string name="section_format">Hello World from section: %1$d</string>
 

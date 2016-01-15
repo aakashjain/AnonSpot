@@ -50,7 +50,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobstac.anonspot.MainActivity" />
         </activity>
-        <activity android:name=".PrivateChat"></activity>
+
+        <activity
+            android:name=".PrivateChatActivity"
+            android:label="@string/title_activity_private_chat"
+            android:parentActivityName=".HolderActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobstac.anonspot.HolderActivity" />
+        </activity>
+
     </application>
 
 </manifest>
