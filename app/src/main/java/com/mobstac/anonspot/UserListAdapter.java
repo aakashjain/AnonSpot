@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
-
-import java.util.Map;
+import com.mobstac.anonspot.models.User;
 
 /**
  * Created by aakash on 14/1/16.

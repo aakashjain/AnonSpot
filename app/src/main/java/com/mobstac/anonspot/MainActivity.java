@@ -1,8 +1,6 @@
 package com.mobstac.anonspot;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -25,6 +23,9 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
+import com.mobstac.anonspot.models.Genders;
+import com.mobstac.anonspot.receivers.SearchingBeaconReceiver;
+import com.mobstac.anonspot.utils.GenderSelector;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.utils.MSException;

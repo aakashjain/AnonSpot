@@ -14,20 +14,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.mobstac.anonspot.models.ChatMessage;
+import com.mobstac.anonspot.utils.KeyboardHider;
 
-public class ChatFragment extends ListFragment {
+public class ChatMessageFragment extends ListFragment {
 
-    public static final String TAG = ChatFragment.class.getSimpleName();
+    public static final String TAG = ChatMessageFragment.class.getSimpleName();
 
     private Firebase chatroom;
 
     private EditText input;
     private ImageButton send;
 
-    public ChatFragment() {}
+    public ChatMessageFragment() {}
 
-    public static ChatFragment newInstance(String child) {
-        ChatFragment fragment = new ChatFragment();
+    public static ChatMessageFragment newInstance(String child) {
+        ChatMessageFragment fragment = new ChatMessageFragment();
         Bundle bundle = new Bundle();
         bundle.putString("child", child);
         fragment.setArguments(bundle);

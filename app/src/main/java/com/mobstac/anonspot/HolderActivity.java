@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.mobstac.anonspot.receivers.ChattingBeaconReceiver;
+import com.mobstac.anonspot.utils.GenderSelector;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.utils.MSException;
@@ -168,7 +170,7 @@ public class HolderActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0)
-                return ChatFragment.newInstance("global");
+                return ChatMessageFragment.newInstance("global");
             else
                 return new UserListFragment();
         }

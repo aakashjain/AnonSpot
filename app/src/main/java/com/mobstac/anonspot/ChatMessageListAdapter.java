@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.firebase.client.Query;
 import com.firebase.ui.FirebaseListAdapter;
+import com.mobstac.anonspot.models.ChatMessage;
 
 /**
  * Created by aakash on 14/1/16.

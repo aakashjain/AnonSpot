@@ -1,4 +1,4 @@
-package com.mobstac.anonspot;
+package com.mobstac.anonspot.utils;
 
 import android.app.Activity;
 import android.view.MotionEvent;

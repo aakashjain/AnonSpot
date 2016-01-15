@@ -1,4 +1,4 @@
-package com.mobstac.anonspot;
+package com.mobstac.anonspot.models;
 
 /**
  * Created by aakash on 14/1/16.

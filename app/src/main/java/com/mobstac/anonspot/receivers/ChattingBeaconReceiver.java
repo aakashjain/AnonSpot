@@ -1,13 +1,12 @@
-package com.mobstac.anonspot;
+package com.mobstac.anonspot.receivers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.widget.Button;
 
-import com.mobstac.beaconstac.core.Beaconstac;
+import com.mobstac.anonspot.AnonSpot;
+import com.mobstac.anonspot.R;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.core.MSPlace;
 import com.mobstac.beaconstac.models.MSAction;
