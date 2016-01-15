@@ -66,6 +66,10 @@ public class GlobalChat extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_global_chat, container, false);
+
+        Utility utility = new Utility(getActivity());
+        utility.setupUI(v);;
+
         input = (EditText) v.findViewById(R.id.messageInput);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
