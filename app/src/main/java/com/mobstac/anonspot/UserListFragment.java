@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 
-public class OnlineUsers extends ListFragment {
+public class UserListFragment extends ListFragment {
 
-    public OnlineUsers() {}
+    public UserListFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

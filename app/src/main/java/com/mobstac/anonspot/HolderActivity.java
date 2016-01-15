@@ -170,7 +170,7 @@ public class HolderActivity extends AppCompatActivity {
             if (position == 0)
                 return ChatFragment.newInstance("global");
             else
-                return new OnlineUsers();
+                return new UserListFragment();
         }
 
         @Override
