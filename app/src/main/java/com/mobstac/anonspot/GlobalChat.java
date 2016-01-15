@@ -50,8 +50,8 @@ public class GlobalChat extends ListFragment {
     public void onStart() {
         super.onStart();
         final ListView list = getListView();
-        final ChatMessageListAdapter adapter = new ChatMessageListAdapter(getActivity(),
-                R.layout.chatmessage_view, AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("global"));
+        final ChatMessageListAdapter adapter = new ChatMessageListAdapter(getActivity(), R.layout.chatmessage_view,
+                AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("global").limitToLast(100));
         list.setAdapter(adapter);
         adapter.registerDataSetObserver(new DataSetObserver() {
             @Override

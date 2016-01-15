@@ -1,6 +1,5 @@
 package com.mobstac.anonspot;
 
-import android.content.Context;
 import android.content.IntentFilter;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -149,6 +148,7 @@ public class HolderActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            GenderSelector.show(this);
             return true;
         }
 

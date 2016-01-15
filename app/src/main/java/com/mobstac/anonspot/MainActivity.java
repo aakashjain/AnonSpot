@@ -111,18 +111,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (AnonSpot.prefs.getString("gender", "-").equals("-")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final CharSequence[] items = new CharSequence[] {"Male", "Female", "Other"};
-            builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    SharedPreferences.Editor editor = AnonSpot.prefs.edit();
-                    editor.putString("gender", items[which].toString());
-                    editor.commit();
-                    dialog.cancel();
-                }
-            });
-            builder.show();
+            GenderSelector.show(this);
         }
     }
 
