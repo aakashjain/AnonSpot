@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -89,8 +90,19 @@ public class GlobalChat extends ListFragment {
     private void sendMessage() {
         String message = input.getText().toString();
         String name = AnonSpot.prefs.getString("name", "-");
+        String gender;
+        switch (AnonSpot.prefs.getString("gender", "Other")) {
+            case "Male":
+                gender = (String) Html.fromHtml("&#x2642;").toString();
+                break;
+            case "Female":
+                gender = (String) Html.fromHtml("&#x2640;").toString();
+                break;
+            default:
+                gender = (String) Html.fromHtml("&#x25CB;").toString();
+        }
         if (!message.equals("")) {
-            ChatMessage cm = new ChatMessage(name, message);
+            ChatMessage cm = new ChatMessage(gender + " " + name, message);
             AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("global").push().setValue(cm);
             input.setText("");
         }

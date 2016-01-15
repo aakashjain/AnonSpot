@@ -1,6 +1,7 @@
 package com.mobstac.anonspot;
 
 import android.app.Activity;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,10 @@ import com.firebase.ui.FirebaseListAdapter;
 public class ChatMessageListAdapter extends FirebaseListAdapter<ChatMessage> {
 
     private Activity activity;
+    private static final Html female = Html.fromHtml("&#x2640;");
+    private static final Html male = Html.fromHtml("&#x2642;");
+    private static final Html other = Html.fromHtml("&#x25CB;");
+
 
     public ChatMessageListAdapter(Activity activity, int layout, Firebase ref) {
         super(activity, ChatMessage.class, layout, ref);
@@ -24,7 +29,7 @@ public class ChatMessageListAdapter extends FirebaseListAdapter<ChatMessage> {
     protected void populateView(View v, ChatMessage model, int position) {
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView message = (TextView) v.findViewById(R.id.message);
-        name.setText(model.getName() + " : ");
+        name.setText(Html.fromHtml("&#x2640;") + " " + model.getName() + " : ");
         message.setText(model.getMessage());
     }
 }
