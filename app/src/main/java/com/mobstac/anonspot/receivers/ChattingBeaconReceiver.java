@@ -5,11 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
+import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.mobstac.anonspot.AnonSpot;
-import com.mobstac.anonspot.HolderActivity;
 import com.mobstac.anonspot.R;
-import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.core.MSPlace;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     private AlertDialog dialog;
+    private CountDownTimer countDownTimer;
     private final Activity activity;
     private boolean registered;
 
@@ -39,11 +40,28 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
             public void onClick(DialogInterface dialog, int id) {
                 activity.setResult(Activity.RESULT_OK);
                 activity.finish();
+                countDownTimer.cancel();
             }
         });
 
         dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
+
+        countDownTimer = new CountDownTimer(10000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (dialog.isShowing()) {
+                    dialog.setMessage( "Get back to your AnonSpot in " + millisUntilFinished/1000 + " seconds.");
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                if (dialog.isShowing()) {
+                    dialog.cancel();
+                    activity.finish();
+                }
+            }
+        };
     }
 
     @Override
@@ -53,6 +71,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     @Override
     public void campedOnBeacon(Context context, MSBeacon beacon) {
+        Log.wtf("cb Camped on", AnonSpot.spotBeaconKey);
         if (beacon.getBeaconKey().equals(AnonSpot.spotBeaconKey)) {
             dialog.dismiss();
         }
@@ -67,6 +86,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
         if (rule.equals("ExitAnonSpot")) {
             dialog.show();
+            countDownTimer.start();
         }
     }
 
