@@ -25,5 +25,8 @@ public class ChatMessageListAdapter extends FirebaseListAdapter<ChatMessage> {
         TextView message = (TextView) v.findViewById(R.id.message);
         name.setText(model.getName() + " : ");
         message.setText(model.getMessage());
+        if (model.getName().split("\\s+")[1].equals(AnonSpot.prefs.getString("name", " "))) {
+            v.setBackgroundColor(0xFFE1EA98);
+        }
     }
 }
