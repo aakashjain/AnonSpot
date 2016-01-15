@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity {
         startButton.setEnabled(false);
         startButton.setOnClickListener(new MyOnClickListener());
 
+        beaconstac = Beaconstac.getInstance(getApplicationContext());
+        beaconstac.syncRules();
+        beaconstac.syncBeacons();
+
         beaconReceiver = new SearchingBeaconReceiver(this);
         registerBroadcast();
-        beaconstac = Beaconstac.getInstance(getApplicationContext());
 
 //        beaconstac.setUserFacts();
         try {
@@ -175,6 +178,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         startButton.setEnabled(false);
+        try {
+            beaconstac.stopRangingBeacons();
+        } catch  (MSException e) {
+            Log.e(TAG, "Couldn't stop ranging");
+        }
         unregisterBroadcast();
         appInForeground = false;
     }
@@ -183,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerBroadcast();
+        try {
+            beaconstac.startRangingBeacons();
+        } catch  (MSException e) {
+            Log.e(TAG, "Couldn't start ranging");
+        }
         appInForeground = true;
     }
 

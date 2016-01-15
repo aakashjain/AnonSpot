@@ -24,7 +24,7 @@ public class ChatMessageListAdapter extends FirebaseListAdapter<ChatMessage> {
     protected void populateView(View v, ChatMessage model, int position) {
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView message = (TextView) v.findViewById(R.id.message);
-        name.setText(model.getName());
+        name.setText(model.getName() + " : ");
         message.setText(model.getMessage());
     }
 }

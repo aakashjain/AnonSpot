@@ -11,11 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;
+import com.mobstac.beaconstac.utils.MSException;
 
 public class HolderActivity extends AppCompatActivity {
 
@@ -31,11 +34,14 @@ public class HolderActivity extends AppCompatActivity {
     private ChattingBeaconReceiver beaconReceiver;
     private boolean appInForeground = false;
     private boolean registered = false;
+    private Beaconstac beaconstac;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private static final String TAG = HolderActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class HolderActivity extends AppCompatActivity {
 //        });
         beaconReceiver = new ChattingBeaconReceiver(this);
         registerBroadcast();
+        beaconstac = Beaconstac.getInstance(getApplicationContext());
     }
 
     @Override
@@ -99,13 +106,18 @@ public class HolderActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        Toast.makeText(this, "Your name is: " + AnonSpot.prefs.getString("name", ""), Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterBroadcast();
+        try {
+            beaconstac.stopRangingBeacons();
+        } catch  (MSException e) {
+            Log.e(TAG, "Couldn't stop ranging");
+        }
         appInForeground = false;
     }
 
@@ -113,6 +125,11 @@ public class HolderActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerBroadcast();
+        try {
+            beaconstac.startRangingBeacons();
+        } catch  (MSException e) {
+            Log.e(TAG, "Couldn't start ranging");
+        }
         appInForeground = true;
     }
 

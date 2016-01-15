@@ -37,6 +37,7 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
     @Override
     public void campedOnBeacon(Context context, MSBeacon beacon) {
         AnonSpot.spotBeaconKey = beacon.getBeaconKey();
+        Log.i("Camped on", AnonSpot.spotBeaconKey);
     }
 
     @Override
