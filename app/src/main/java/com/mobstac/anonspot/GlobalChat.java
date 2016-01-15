@@ -89,7 +89,7 @@ public class GlobalChat extends ListFragment {
 
     private void sendMessage() {
         String message = input.getText().toString();
-        String name = AnonSpot.prefs.getString("name", "-");
+        String name = AnonSpot.prefs.getString("name", " ");
         String gender;
         switch (AnonSpot.prefs.getString("gender", "Other")) {
             case "Male":
@@ -102,7 +102,7 @@ public class GlobalChat extends ListFragment {
                 gender = (String) Html.fromHtml("&#x25CB;").toString();
         }
         if (!message.equals("")) {
-            ChatMessage cm = new ChatMessage(gender + " " + name, message);
+            ChatMessage cm = new ChatMessage(gender, name, message);
             AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("global").push().setValue(cm);
             input.setText("");
         }
