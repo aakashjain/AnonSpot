@@ -26,7 +26,7 @@ public class ChatMessageListAdapter extends FirebaseListAdapter<ChatMessage> {
         name.setText(model.getGender() + " " + model.getName() + " : ");
         message.setText(model.getMessage());
         if (model.getName().equals(AnonSpot.prefs.getString("name", " "))) {
-            v.setBackgroundColor(0xFFE1EA98);
+            v.setBackgroundColor(AnonSpotConstants.USER_HIGHLIGHT);
         }
     }
 }

@@ -4,22 +4,26 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ImageView
-        android:id="@+id/gender"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
-
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/gender"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
         android:layout_marginLeft="5dp" />
 
-    <ImageView
+    <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:src="@android:drawable/sym_action_chat" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:layout_marginLeft="5dp" />
+
+    <ImageButton
+        android:id="@+id/goPrivate"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:src="@android:drawable/ic_menu_send" />
 
 </LinearLayout>

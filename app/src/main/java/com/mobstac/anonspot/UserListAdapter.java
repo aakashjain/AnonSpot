@@ -3,6 +3,7 @@ package com.mobstac.anonspot;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,24 +27,32 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
     @Override
     protected void populateView(View v, User model, int position) {
         TextView name = (TextView) v.findViewById(R.id.name);
-        ImageView gender = (ImageView) v.findViewById(R.id.gender);
         name.setText(model.getName());
+
+        TextView gender = (TextView) v.findViewById(R.id.gender);
         switch (model.getGender()) {
             case "Male":
-                gender.setImageResource(R.drawable.male);
+                gender.setText(AnonSpotConstants.MALE_SYM);
                 break;
             case "Female":
-                gender.setImageResource(R.drawable.female);
+                gender.setText(AnonSpotConstants.FEMALE_SYM);
                 break;
             default:
-                gender.setImageResource(R.drawable.other);
+                gender.setText(AnonSpotConstants.OTHER_SYM);
         }
-        v.setOnClickListener(new View.OnClickListener() {
+
+        ImageButton button = (ImageButton) v.findViewById(R.id.goPrivate);
+        button.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserListAdapter.this.activity, PrivateChat.class);
                 UserListAdapter.this.activity.startActivity(intent);
             }
         });
+        if (model.getName().equals(AnonSpot.prefs.getString("name", " "))) {
+            button.setEnabled(false);
+            button.setVisibility(View.INVISIBLE);
+            v.setBackgroundColor(AnonSpotConstants.USER_HIGHLIGHT);
+        }
     }
 }

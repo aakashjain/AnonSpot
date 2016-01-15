@@ -67,8 +67,8 @@ public class GlobalChat extends ListFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_global_chat, container, false);
 
-        Utility utility = new Utility(getActivity());
-        utility.setupUI(v);;
+        KeyboardHider hider = new KeyboardHider(getActivity());
+        hider.setupUI(v);
 
         input = (EditText) v.findViewById(R.id.messageInput);
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -97,13 +97,13 @@ public class GlobalChat extends ListFragment {
         String gender;
         switch (AnonSpot.prefs.getString("gender", "Other")) {
             case "Male":
-                gender = (String) Html.fromHtml("&#x2642;").toString();
+                gender = AnonSpotConstants.MALE_SYM;
                 break;
             case "Female":
-                gender = (String) Html.fromHtml("&#x2640;").toString();
+                gender = AnonSpotConstants.FEMALE_SYM;
                 break;
             default:
-                gender = (String) Html.fromHtml("&#x25CB;").toString();
+                gender = AnonSpotConstants.OTHER_SYM;
         }
         if (!message.equals("")) {
             ChatMessage cm = new ChatMessage(gender, name, message);
