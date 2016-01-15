@@ -168,7 +168,7 @@ public class HolderActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0)
-                return new GlobalChat();
+                return ChatFragment.newInstance("global");
             else
                 return new OnlineUsers();
         }
