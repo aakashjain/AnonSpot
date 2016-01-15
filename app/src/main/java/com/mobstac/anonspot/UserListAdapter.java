@@ -24,7 +24,7 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
 
     @Override
     protected void populateView(View v, User model, int position) {
-        TextView name = (TextView) v.findViewById(R.id.name);
+        final TextView name = (TextView) v.findViewById(R.id.name);
         name.setText(model.getName());
 
         TextView gender = (TextView) v.findViewById(R.id.gender);
@@ -44,6 +44,7 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserListAdapter.this.activity, PrivateChat.class);
+                intent.putExtra("user2", name.getText().toString());
                 UserListAdapter.this.activity.startActivity(intent);
             }
         });
