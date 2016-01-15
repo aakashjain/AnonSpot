@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.mobstac.anonspot.AnonSpot;
 import com.mobstac.anonspot.R;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     private AlertDialog dialog;
+    private CountDownTimer countDownTimer;
     private final Activity activity;
     private boolean inSameSpot = true;
 
@@ -31,12 +34,32 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
         builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                countDownTimer.cancel();
                 activity.finish();
             }
         });
 
         dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
+//        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
+        // count down timer
+        countDownTimer = new CountDownTimer(10000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (dialog.isShowing()) {
+                    dialog.setMessage( "Get back to your AnonSpot in " + millisUntilFinished/1000 + " seconds.");
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                if (dialog.isShowing()) {
+                    dialog.cancel();
+                    activity.finish();
+                }
+            }
+        };
     }
 
     @Override
@@ -46,6 +69,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     @Override
     public void campedOnBeacon(Context context, MSBeacon beacon) {
+        Log.wtf("cb Camped on", AnonSpot.spotBeaconKey);
         if (beacon.getBeaconKey().equals(AnonSpot.spotBeaconKey)) {
             dialog.dismiss();
         }
@@ -60,6 +84,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
         if (rule.equals("ExitAnonSpot")) {
             dialog.show();
+            countDownTimer.start();
         }
     }
 
