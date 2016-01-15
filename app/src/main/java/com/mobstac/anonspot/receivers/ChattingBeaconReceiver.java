@@ -58,6 +58,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
             public void onFinish() {
                 if (dialog.isShowing()) {
                     dialog.cancel();
+                    activity.setResult(Activity.RESULT_OK);
                     activity.finish();
                 }
             }
@@ -74,6 +75,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
         Log.wtf("cb Camped on", AnonSpot.spotBeaconKey);
         if (beacon.getBeaconKey().equals(AnonSpot.spotBeaconKey)) {
             dialog.dismiss();
+            countDownTimer.cancel();
         }
     }
 
