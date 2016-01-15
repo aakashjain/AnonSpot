@@ -1,6 +1,6 @@
 package com.mobstac.anonspot;
 
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,15 +18,12 @@ import android.widget.Toast;
 import com.mobstac.anonspot.receivers.ChattingBeaconReceiver;
 import com.mobstac.anonspot.utils.GenderSelector;
 import com.mobstac.beaconstac.core.Beaconstac;
-import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.utils.MSException;
 
 public class HolderActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ChattingBeaconReceiver beaconReceiver;
-    private boolean appInForeground = false;
-    private boolean registered = false;
     private Beaconstac beaconstac;
     private ViewPager mViewPager;
 
@@ -50,67 +47,38 @@ public class HolderActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         beaconReceiver = new ChattingBeaconReceiver(this);
-        registerBroadcast();
         beaconstac = Beaconstac.getInstance(getApplicationContext());
 
         Toast.makeText(this, "Your name is: " + AnonSpot.prefs.getString("name", ""), Toast.LENGTH_LONG).show();
     }
 
     @Override
-    protected void onDestroy() {
-        String uid = AnonSpot.firebase.getAuth().getUid();
-        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
-
-        Beaconstac beaconstac = Beaconstac.getInstance(getApplicationContext());
-        beaconstac.setUserFacts("InAnonSpot", "false");
-
-        super.onDestroy();
-    }
-
-    private void registerBroadcast() {
-        if (!registered) {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
-            registerReceiver(beaconReceiver, intentFilter);
-            registered = true;
-        }
-    }
-
-    private void unregisterBroadcast() {
-        if (registered) {
-            unregisterReceiver(beaconReceiver);
-            registered = false;
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterBroadcast();
+        beaconReceiver.unregisterBroadcast();
         try {
             beaconstac.stopRangingBeacons();
         } catch  (MSException e) {
             Log.e(TAG, "Couldn't stop ranging");
         }
-        appInForeground = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerBroadcast();
+        beaconReceiver.registerBroadcast();
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
             Log.e(TAG, "Couldn't start ranging");
         }
-        appInForeground = true;
     }
 
     @Override
@@ -160,4 +128,11 @@ public class HolderActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AnonSpotConstants.USER_EXITED_SPOT && resultCode == RESULT_OK) {
+            setResult(RESULT_OK);
+            finish();
+        }
+    }
 }

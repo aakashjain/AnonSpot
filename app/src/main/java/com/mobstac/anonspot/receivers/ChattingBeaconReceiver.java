@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 
 import com.mobstac.anonspot.AnonSpot;
+import com.mobstac.anonspot.HolderActivity;
 import com.mobstac.anonspot.R;
+import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
+import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.core.MSPlace;
 import com.mobstac.beaconstac.models.MSAction;
 import com.mobstac.beaconstac.models.MSBeacon;
@@ -21,16 +25,19 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
     private AlertDialog dialog;
     private final Activity activity;
-    private boolean inSameSpot = true;
+    private boolean registered;
 
     public ChattingBeaconReceiver(final Activity activity) {
         this.activity = activity;
 
+        registered = false;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
-
+        builder.setCancelable(false);
         builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                activity.setResult(Activity.RESULT_OK);
                 activity.finish();
             }
         });
@@ -81,5 +88,22 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
     @Override
     public void exitedGeofence(Context context, ArrayList<MSPlace> arrayList) {
 
+    }
+
+    public void registerBroadcast() {
+        if (!registered) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+            activity.registerReceiver(this, intentFilter);
+            registered = true;
+        }
+    }
+
+    public void unregisterBroadcast() {
+        if (registered) {
+            activity.unregisterReceiver(this);
+            registered = false;
+        }
     }
 }

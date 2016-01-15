@@ -45,7 +45,7 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
             public void onClick(View v) {
                 Intent intent = new Intent(UserListAdapter.this.activity, PrivateChatActivity.class);
                 intent.putExtra("user2", name.getText().toString());
-                UserListAdapter.this.activity.startActivity(intent);
+                UserListAdapter.this.activity.startActivityForResult(intent, AnonSpotConstants.USER_EXITED_SPOT);
             }
         });
         if (model.getName().equals(AnonSpot.prefs.getString("name", " "))) {

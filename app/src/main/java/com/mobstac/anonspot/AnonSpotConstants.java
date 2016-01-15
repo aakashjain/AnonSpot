@@ -16,4 +16,6 @@ public class AnonSpotConstants {
     public static final String OTHER_SYM = (String) Html.fromHtml("&#x25CB;").toString();
 
     public static final int USER_HIGHLIGHT = 0xFFE1EA98;
+
+    public static final int USER_EXITED_SPOT = 1337;
 }

@@ -23,6 +23,7 @@ public class GenderSelector {
                 dialog.cancel();
             }
         });
+        builder.setCancelable(false);
         builder.show();
     }
 }

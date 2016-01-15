@@ -99,16 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        try {
-            beaconstac.stopRangingBeacons();
-        } catch  (MSException e) {
-            Log.e(TAG,"Couldn't stop ranging");
-        }
-        super.onDestroy();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         if (AnonSpot.prefs.getString("gender", "-").equals("-")) {
@@ -131,19 +121,19 @@ public class MainActivity extends AppCompatActivity {
                     Genders current = dataSnapshot.getValue(Genders.class);
                     if (current == null || current.getRatio(gender) <= 0.5) {
                         AnonSpot.firebase.child(AnonSpot.spotBeaconKey)
-                                            .authAnonymously(new Firebase.AuthResultHandler() {
+                                .authAnonymously(new Firebase.AuthResultHandler() {
 
-                            @Override
-                            public void onAuthenticated(AuthData authData) {
-                                Log.i(TAG, "Authenticated");
-                                new RandomNameGetter().execute(authData.getUid());
-                            }
+                                    @Override
+                                    public void onAuthenticated(AuthData authData) {
+                                        Log.i(TAG, "Authenticated");
+                                        new RandomNameGetter().execute(authData.getUid());
+                                    }
 
-                            @Override
-                            public void onAuthenticationError(FirebaseError firebaseError) {
-                                Log.i(TAG, "Error authenticating: " + firebaseError.toString());
-                            }
-                        });
+                                    @Override
+                                    public void onAuthenticationError(FirebaseError firebaseError) {
+                                        Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                                    }
+                                });
                     } else {
 
                         loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
@@ -180,6 +170,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String uid = AnonSpot.firebase.getAuth().getUid();
+        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
+        Beaconstac.getInstance(getApplicationContext()).setUserFacts("InAnonSpot", "false");
+        Log.i(TAG, "CLEANING UP YAY");
         registerBroadcast();
         try {
             beaconstac.startRangingBeacons();
@@ -247,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
             beaconstac.setUserFacts("InAnonSpot", "true");
             loader.dismiss();
             Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, AnonSpotConstants.USER_EXITED_SPOT);
         }
     }
 }
