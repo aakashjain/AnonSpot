@@ -43,7 +43,7 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
         button.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserListAdapter.this.activity, PrivateChat.class);
+                Intent intent = new Intent(UserListAdapter.this.activity, PrivateChatActivity.class);
                 intent.putExtra("user2", name.getText().toString());
                 UserListAdapter.this.activity.startActivity(intent);
             }
