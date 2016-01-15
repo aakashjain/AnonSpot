@@ -62,7 +62,7 @@ public class ChatMessageFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_global_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
         KeyboardHider hider = new KeyboardHider(getActivity());
         hider.setupUI(v);
