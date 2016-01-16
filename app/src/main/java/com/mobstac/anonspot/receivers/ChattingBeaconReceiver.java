@@ -38,9 +38,9 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.dialog_leave, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                countDownTimer.cancel();
                 activity.setResult(Activity.RESULT_OK);
                 activity.finish();
-                countDownTimer.cancel();
             }
         });
 
@@ -57,7 +57,7 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
             @Override
             public void onFinish() {
                 if (dialog.isShowing()) {
-                    dialog.cancel();
+                    dialog.dismiss();
                     activity.setResult(Activity.RESULT_OK);
                     activity.finish();
                 }
