@@ -58,9 +58,11 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
         switch (rule) {
             case "EnterAnonSpotStep1":
-                setGenderFact(context);
+                Log.wtf("SEARCH TRIGGERED", "EnterAnonSpotStep1");
+                setGenderFact();
                 break;
             case "EnterAnonSpotStep2":
+                Log.wtf("SEARCH TRIGGERED", "EnterAnonSpotStep2");
                 startButton.setEnabled(true);
                 break;
         }
@@ -86,7 +88,7 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
     }
 
-    private void setGenderFact(final Context context) {
+    private void setGenderFact() {
         final String gender = AnonSpot.prefs.getString("gender", "Other");
         Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
         genderStore.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -99,7 +101,8 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
                 } else {
                     ratio = 0;
                 }
-                Beaconstac.getInstance(context.getApplicationContext()).setUserFacts("ratio", ratio);
+                Beaconstac.getInstance(activity.getApplicationContext()).setUserFacts("SexRatio", ratio);
+                Log.wtf("RATIO", "Setting " + ratio);
             }
 
             @Override
