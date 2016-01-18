@@ -53,4 +53,17 @@ public class Genders {
                 others = others + 1;
         }
     }
+
+    public void decrement(String gender) {
+        switch (gender) {
+            case "Male":
+                males = males - 1;
+                break;
+            case "Female":
+                females = females - 1;
+                break;
+            default:
+                others = others - 1;
+        }
+    }
 }

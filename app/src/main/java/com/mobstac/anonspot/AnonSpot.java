@@ -9,7 +9,7 @@ import com.mobstac.anonspot.utils.AnonSpotConstants;
 import com.mobstac.beaconstac.core.Beaconstac;
 
 /**
- * Created by joel on 13/1/16.
+ * Created by neelesh on 13/1/16.
  */
 public class AnonSpot extends Application {
 

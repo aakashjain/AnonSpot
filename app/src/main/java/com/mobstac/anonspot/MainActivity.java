@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         startButton.setEnabled(false);
         try {
             beaconstac.stopRangingBeacons();
@@ -88,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Couldn't stop ranging");
         }
         beaconReceiver.unregisterBroadcast();
+        super.onPause();
     }
 
     @Override
@@ -96,14 +96,14 @@ public class MainActivity extends AppCompatActivity {
         if (AnonSpot.firebase.getAuth() != null) {
             String uid = AnonSpot.firebase.getAuth().getUid();
             AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
-            AnonSpot.firebase.unauth();
+            decrementGenderCount();
             Beaconstac.getInstance(getApplicationContext()).setUserFacts("InAnonSpot", "false");
             Log.i(TAG, "CLEANING UP");
         }
         beaconReceiver.registerBroadcast();
         try {
             beaconstac.startRangingBeacons();
-        } catch  (MSException e) {
+        } catch (MSException e) {
             Log.e(TAG, "Couldn't start ranging");
         }
     }
@@ -144,14 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Error authenticating: " + firebaseError.toString());
                 }
             });
-//            loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
-//            final Handler h = new Handler() {
-//                @Override
-//                public void handleMessage(Message msg) {
-//                    loader.dismiss();
-//                }
-//            };
-//            h.sendMessageDelayed(h.obtainMessage(), 5000);
         }
     }
 
@@ -177,25 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 user.put("name", response);
                 user.put("gender", gender);
                 AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uids[0]).setValue(user);
-
-
-                AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders")
-                                            .runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-                        Genders g = mutableData.getValue(Genders.class);
-                        if (g == null) {
-                            g = new Genders(0, 0, 0);
-                        }
-                        g.increment(gender);
-                        mutableData.setValue(g);
-                        return Transaction.success(mutableData);
-                    }
-
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                    }
-                });
+                incrementGenderCount();
 
                 SharedPreferences.Editor editor = AnonSpot.prefs.edit();
                 editor.putString("name", response);
@@ -215,5 +189,46 @@ public class MainActivity extends AppCompatActivity {
             Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
             startActivityForResult(intent, AnonSpotConstants.USER_EXITED_SPOT);
         }
+    }
+
+    private void decrementGenderCount() {
+        final String gender = AnonSpot.prefs.getString("gender", "Other");
+        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Genders g = mutableData.getValue(Genders.class);
+                if (g != null) {
+                    g.decrement(gender);
+                    mutableData.setValue(g);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                AnonSpot.firebase.unauth();
+            }
+        });
+    }
+
+    private void incrementGenderCount() {
+        final String gender = AnonSpot.prefs.getString("gender", "Other");
+        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Genders g = mutableData.getValue(Genders.class);
+                if (g == null) {
+                    g = new Genders(0, 0, 0);
+                }
+                g.increment(gender);
+                mutableData.setValue(g);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 }

@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
- * Created by mobstac on 15/1/16.
+ * Created by manisha on 15/1/16.
  */
 public class KeyboardHider {
 
