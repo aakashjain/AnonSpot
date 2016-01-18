@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             loader = ProgressDialog.show(MainActivity.this, "Just a sec",
                                         "Adding you to the room", true, true);
+            loader.setCanceledOnTouchOutside(false);
 
             final String gender = AnonSpot.prefs.getString("gender", "Other");
             Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
