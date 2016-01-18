@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new MyOnClickListener());
 
         beaconstac = Beaconstac.getInstance(getApplicationContext());
-        beaconstac.syncRules();
-        beaconstac.syncBeacons();
 
         beaconReceiver = new SearchingBeaconReceiver(this);
         registerBroadcast();
@@ -171,10 +169,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String uid = AnonSpot.firebase.getAuth().getUid();
-        AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
-        Beaconstac.getInstance(getApplicationContext()).setUserFacts("InAnonSpot", "false");
-        Log.i(TAG, "CLEANING UP YAY");
+        if (AnonSpot.firebase.getAuth() != null) {
+            String uid = AnonSpot.firebase.getAuth().getUid();
+            AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
+            Beaconstac.getInstance(getApplicationContext()).setUserFacts("InAnonSpot", "false");
+            Log.i(TAG, "CLEANING UP YAY");
+        }
         registerBroadcast();
         try {
             beaconstac.startRangingBeacons();

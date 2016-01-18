@@ -48,6 +48,11 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
         if (rule.equals("EnterAnonSpot")) {
             startButton.setEnabled(true);
+            for (MSAction action : actions) {
+                if (action.getType() == MSAction.MSActionType.MSActionTypeNotification) {
+                    Log.i("RECEIVER", "Got notification");
+                }
+            }
         }
     }
 

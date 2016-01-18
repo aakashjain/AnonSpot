@@ -20,10 +20,12 @@ public class AnonSpot extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Beaconstac.getInstance(getApplicationContext())
-                .setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
         Firebase.setAndroidContext(getApplicationContext());
         firebase = new Firebase(AnonSpotConstants.FIREBASE_URL);
+        Beaconstac.getInstance(getApplicationContext())
+                .setRegionParams(getString(R.string.uuid), getString(R.string.app_name));
+        Beaconstac.getInstance(getApplicationContext()).syncBeacons();
+        Beaconstac.getInstance(getApplicationContext()).syncRules();
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         spotBeaconKey = "-";
     }
