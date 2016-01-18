@@ -1,4 +1,4 @@
-package com.mobstac.anonspot;
+package com.mobstac.anonspot.utils;
 
 import android.text.Html;
 

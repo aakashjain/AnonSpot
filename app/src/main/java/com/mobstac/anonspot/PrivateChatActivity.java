@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.mobstac.anonspot.receivers.ChattingBeaconReceiver;
 import com.mobstac.beaconstac.core.Beaconstac;
-import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.utils.MSException;
 
 public class PrivateChatActivity extends AppCompatActivity {
@@ -51,7 +50,7 @@ public class PrivateChatActivity extends AppCompatActivity {
             u1u2 = user2 + "::" + user1;
         }
 
-        ChatMessageFragment chatMessageFragment = ChatMessageFragment.newInstance(u1u2);
+        ChatMessageListFragment chatMessageFragment = ChatMessageListFragment.newInstance(u1u2);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.fragment_container, chatMessageFragment);

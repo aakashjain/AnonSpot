@@ -25,6 +25,7 @@ import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.mobstac.anonspot.models.Genders;
 import com.mobstac.anonspot.receivers.SearchingBeaconReceiver;
+import com.mobstac.anonspot.utils.AnonSpotConstants;
 import com.mobstac.anonspot.utils.GenderSelector;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.MSConstants;

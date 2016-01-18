@@ -33,7 +33,7 @@
             android:enabled="true" />
 
         <provider
-            android:name=".AnonSpotProvider"
+            android:name=".provider.AnonSpotProvider"
             android:authorities="com.mobstac.anonspot.provider"
             android:enabled="true"
             android:exported="false"

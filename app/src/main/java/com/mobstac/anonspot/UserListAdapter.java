@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
 import com.mobstac.anonspot.models.User;
+import com.mobstac.anonspot.utils.AnonSpotConstants;
 
 /**
  * Created by aakash on 14/1/16.

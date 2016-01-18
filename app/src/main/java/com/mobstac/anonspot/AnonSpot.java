@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.firebase.client.Firebase;
+import com.mobstac.anonspot.utils.AnonSpotConstants;
 import com.mobstac.beaconstac.core.Beaconstac;
 
 /**

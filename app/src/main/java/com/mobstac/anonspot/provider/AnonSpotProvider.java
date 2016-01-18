@@ -1,4 +1,4 @@
-package com.mobstac.anonspot;
+package com.mobstac.anonspot.provider;
 
 import android.content.ContentValues;
 import android.database.Cursor;
