@@ -8,13 +8,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mobstac.anonspot.MainActivity"
-    android:background="@drawable/logo">
+    android:background="@drawable/background_logo">
 
     <Button
         android:id="@+id/start_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="chat"
-        android:enabled="false"/>
+        android:textSize="40sp"
+        android:enabled="false"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:text="CHAT!" />
+
 </RelativeLayout>
