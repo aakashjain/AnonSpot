@@ -2,6 +2,7 @@ package com.mobstac.anonspot;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -53,6 +54,11 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
             button.setEnabled(false);
             button.setVisibility(View.INVISIBLE);
             v.setBackgroundColor(AnonSpotConstants.USER_HIGHLIGHT);
+        }
+        else {
+            button.setEnabled(true);
+            button.setVisibility(View.VISIBLE);
+            v.setBackgroundColor(Color.WHITE);
         }
     }
 }
