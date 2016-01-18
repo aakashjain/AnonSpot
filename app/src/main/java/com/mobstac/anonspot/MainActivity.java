@@ -132,16 +132,47 @@ public class MainActivity extends AppCompatActivity {
                     "Adding you to the room", true, true);
             loader.setCanceledOnTouchOutside(false);
 
-            AnonSpot.firebase.child(AnonSpot.spotBeaconKey).authAnonymously(new Firebase.AuthResultHandler() {
+            final String gender = AnonSpot.prefs.getString("gender", "Other");
+            Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
+            genderStore.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onAuthenticated(AuthData authData) {
-                    Log.i(TAG, "Authenticated");
-                    new RandomNameGetter().execute(authData.getUid());
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Genders current = dataSnapshot.getValue(Genders.class);
+                    float ratio;
+                    if (current != null) {
+                        ratio = current.getRatio(gender);
+                    } else {
+                        ratio = 0;
+                    }
+                    if (ratio <= 0.5) {
+                        AnonSpot.firebase.child(AnonSpot.spotBeaconKey)
+                                .authAnonymously(new Firebase.AuthResultHandler() {
+                                    @Override
+                                    public void onAuthenticated(AuthData authData) {
+                                        Log.i(TAG, "Authenticated");
+                                        new RandomNameGetter().execute(authData.getUid());
+                                    }
+
+                                    @Override
+                                    public void onAuthenticationError(FirebaseError firebaseError) {
+                                        Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                                    }
+                                });
+                    } else {
+                        loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
+                        final Handler h = new Handler() {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                loader.dismiss();
+                            }
+                        };
+                        h.sendMessageDelayed(h.obtainMessage(), 5000);
+                    }
                 }
 
                 @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.e("FIREBASE", "Error fetching genders");
                 }
             });
         }
