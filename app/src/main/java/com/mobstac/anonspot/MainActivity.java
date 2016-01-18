@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog loader;
     private SearchingBeaconReceiver beaconReceiver;
     private boolean registered = false;
-    private boolean appInForeground = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         beaconReceiver = new SearchingBeaconReceiver(this);
         registerBroadcast();
 
-//        beaconstac.setUserFacts();
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {
@@ -107,55 +105,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected class MyOnClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            loader = ProgressDialog.show(MainActivity.this, "Just a sec",
-                                        "Adding you to the room", true, true);
-            loader.setCanceledOnTouchOutside(false);
-
-            final String gender = AnonSpot.prefs.getString("gender", "Other");
-            Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
-            genderStore.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Genders current = dataSnapshot.getValue(Genders.class);
-                    if (current == null || current.getRatio(gender) <= 0.5) {
-                        AnonSpot.firebase.child(AnonSpot.spotBeaconKey)
-                                .authAnonymously(new Firebase.AuthResultHandler() {
-
-                                    @Override
-                                    public void onAuthenticated(AuthData authData) {
-                                        Log.i(TAG, "Authenticated");
-                                        new RandomNameGetter().execute(authData.getUid());
-                                    }
-
-                                    @Override
-                                    public void onAuthenticationError(FirebaseError firebaseError) {
-                                        Log.i(TAG, "Error authenticating: " + firebaseError.toString());
-                                    }
-                                });
-                    } else {
-
-                        loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
-                        final Handler h = new Handler() {
-                            @Override
-                            public void handleMessage(Message msg) {
-                                loader.dismiss();
-                            }
-                        };
-                        h.sendMessageDelayed(h.obtainMessage(), 5000);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
-            });
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -166,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Couldn't stop ranging");
         }
         unregisterBroadcast();
-        appInForeground = false;
     }
 
     @Override
@@ -184,7 +132,53 @@ public class MainActivity extends AppCompatActivity {
         } catch  (MSException e) {
             Log.e(TAG, "Couldn't start ranging");
         }
-        appInForeground = true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_global_chat, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            GenderSelector.show(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected class MyOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            loader = ProgressDialog.show(MainActivity.this, "Just a sec",
+                    "Adding you to the room", true, true);
+            loader.setCanceledOnTouchOutside(false);
+
+            AnonSpot.firebase.child(AnonSpot.spotBeaconKey).authAnonymously(new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    Log.i(TAG, "Authenticated");
+                    new RandomNameGetter().execute(authData.getUid());
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Log.i(TAG, "Error authenticating: " + firebaseError.toString());
+                }
+            });
+//            loader.setMessage("Sorry, the gender ratio is too skewed to let you in :(");
+//            final Handler h = new Handler() {
+//                @Override
+//                public void handleMessage(Message msg) {
+//                    loader.dismiss();
+//                }
+//            };
+//            h.sendMessageDelayed(h.obtainMessage(), 5000);
+        }
     }
 
     private class RandomNameGetter extends AsyncTask<String, Void, Void> {
@@ -247,21 +241,5 @@ public class MainActivity extends AppCompatActivity {
             Intent intent  = new Intent(MainActivity.this, HolderActivity.class);
             startActivityForResult(intent, AnonSpotConstants.USER_EXITED_SPOT);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_global_chat, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            GenderSelector.show(this);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -6,8 +6,14 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Button;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.mobstac.anonspot.AnonSpot;
 import com.mobstac.anonspot.R;
+import com.mobstac.anonspot.models.Genders;
+import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
 import com.mobstac.beaconstac.core.MSPlace;
 import com.mobstac.beaconstac.models.MSAction;
@@ -20,11 +26,9 @@ import java.util.ArrayList;
  */
 public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
-    private final Activity activity;
     private Button startButton;
 
     public SearchingBeaconReceiver(Activity activity) {
-        this.activity = activity;
         startButton = (Button) activity.findViewById(R.id.start_button);
     }
 
@@ -46,13 +50,13 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void triggeredRule(Context context, String rule, ArrayList<MSAction> actions) {
-        if (rule.equals("EnterAnonSpot")) {
-            startButton.setEnabled(true);
-            for (MSAction action : actions) {
-                if (action.getType() == MSAction.MSActionType.MSActionTypeNotification) {
-                    Log.i("RECEIVER", "Got notification");
-                }
-            }
+        switch (rule) {
+            case "EnterAnonSpotStep1":
+                setGenderFact(context);
+                break;
+            case "EnterAnonSpotStep2":
+                startButton.setEnabled(true);
+                break;
         }
     }
 
@@ -74,5 +78,28 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
     @Override
     public void exitedGeofence(Context context, ArrayList<MSPlace> places) {
 
+    }
+
+    private void setGenderFact(final Context context) {
+        final String gender = AnonSpot.prefs.getString("gender", "Other");
+        Firebase genderStore = AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("genders");
+        genderStore.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Genders current = dataSnapshot.getValue(Genders.class);
+                float ratio;
+                if (current != null) {
+                    ratio = current.getRatio(gender);
+                } else {
+                    ratio = 0;
+                }
+                Beaconstac.getInstance(context.getApplicationContext()).setUserFacts("ratio", ratio);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("FIREBASE", "Error fetching genders");
+            }
+        });
     }
 }
