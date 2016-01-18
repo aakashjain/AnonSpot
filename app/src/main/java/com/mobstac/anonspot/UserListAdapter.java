@@ -58,7 +58,7 @@ public class UserListAdapter extends FirebaseListAdapter<User> {
         else {
             button.setEnabled(true);
             button.setVisibility(View.VISIBLE);
-            v.setBackgroundColor(Color.WHITE);
+            v.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }
