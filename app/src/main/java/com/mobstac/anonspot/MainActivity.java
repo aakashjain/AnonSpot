@@ -67,34 +67,7 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new MyOnClickListener());
 
         beaconstac = Beaconstac.getInstance(getApplicationContext());
-
         beaconReceiver = new SearchingBeaconReceiver(this);
-        registerBroadcast();
-
-        try {
-            beaconstac.startRangingBeacons();
-        } catch  (MSException e) {
-            Log.e(TAG, "Couldn't start ranging");
-        }
-    }
-
-    private void registerBroadcast() {
-        if (!registered) {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
-            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_ENTERED_REGION);
-            registerReceiver(beaconReceiver, intentFilter);
-            registered = true;
-        }
-    }
-
-    private void unregisterBroadcast() {
-        if (registered) {
-            unregisterReceiver(beaconReceiver);
-            registered = false;
-        }
     }
 
     @Override
@@ -114,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         } catch  (MSException e) {
             Log.e(TAG, "Couldn't stop ranging");
         }
-        unregisterBroadcast();
+        beaconReceiver.unregisterBroadcast();
     }
 
     @Override
@@ -123,10 +96,11 @@ public class MainActivity extends AppCompatActivity {
         if (AnonSpot.firebase.getAuth() != null) {
             String uid = AnonSpot.firebase.getAuth().getUid();
             AnonSpot.firebase.child(AnonSpot.spotBeaconKey).child("users").child(uid).removeValue();
+            AnonSpot.firebase.unauth();
             Beaconstac.getInstance(getApplicationContext()).setUserFacts("InAnonSpot", "false");
-            Log.i(TAG, "CLEANING UP YAY");
+            Log.i(TAG, "CLEANING UP");
         }
-        registerBroadcast();
+        beaconReceiver.registerBroadcast();
         try {
             beaconstac.startRangingBeacons();
         } catch  (MSException e) {

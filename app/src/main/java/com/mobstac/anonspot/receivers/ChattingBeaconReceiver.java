@@ -46,11 +46,11 @@ public class ChattingBeaconReceiver extends BeaconstacReceiver{
 
         dialog = builder.create();
 
-        countDownTimer = new CountDownTimer(10000,1000) {
+        countDownTimer = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (dialog.isShowing()) {
-                    dialog.setMessage( "Get back to your AnonSpot in " + millisUntilFinished/1000 + " seconds.");
+                    dialog.setMessage("Get back to your AnonSpot in " + millisUntilFinished/1000 + " seconds.");
                 }
             }
 

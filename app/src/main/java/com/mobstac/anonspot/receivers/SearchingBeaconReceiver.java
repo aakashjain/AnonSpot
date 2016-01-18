@@ -3,6 +3,7 @@ package com.mobstac.anonspot.receivers;
 import android.app.Activity;
 import android.content.Context;
 
+import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.Button;
 
@@ -15,6 +16,7 @@ import com.mobstac.anonspot.R;
 import com.mobstac.anonspot.models.Genders;
 import com.mobstac.beaconstac.core.Beaconstac;
 import com.mobstac.beaconstac.core.BeaconstacReceiver;
+import com.mobstac.beaconstac.core.MSConstants;
 import com.mobstac.beaconstac.core.MSPlace;
 import com.mobstac.beaconstac.models.MSAction;
 import com.mobstac.beaconstac.models.MSBeacon;
@@ -26,10 +28,14 @@ import java.util.ArrayList;
  */
 public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
+    private Activity activity;
     private Button startButton;
+    private boolean registered;
 
-    public SearchingBeaconReceiver(Activity activity) {
+    public SearchingBeaconReceiver(final Activity activity) {
         startButton = (Button) activity.findViewById(R.id.start_button);
+        registered = false;
+        this.activity = activity;
     }
 
     @Override
@@ -62,7 +68,7 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
 
     @Override
     public void enteredRegion(Context context, String region) {
-        Log.i("Entered region", region);
+
     }
 
     @Override
@@ -101,5 +107,23 @@ public class SearchingBeaconReceiver extends BeaconstacReceiver {
                 Log.e("FIREBASE", "Error fetching genders");
             }
         });
+    }
+
+    public void registerBroadcast() {
+        if (!registered) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_CAMPED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_EXITED_BEACON);
+            intentFilter.addAction(MSConstants.BEACONSTAC_INTENT_RULE_TRIGGERED);
+            activity.registerReceiver(this, intentFilter);
+            registered = true;
+        }
+    }
+
+    public void unregisterBroadcast() {
+        if (registered) {
+            activity.unregisterReceiver(this);
+            registered = false;
+        }
     }
 }

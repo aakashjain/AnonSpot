@@ -7,7 +7,7 @@
     <string name="action_settings">Set gender</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="dialog_message">Get back to your AnonSpot in 10 seconds.</string>
-    <string name="dialog_title">Warning</string>
+    <string name="dialog_message">Get back to your AnonSpot in 30 seconds.</string>
+    <string name="dialog_title">Leaving AnonSpot</string>
     <string name="dialog_leave">Nah I\'m done</string>
 </resources>
